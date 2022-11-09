@@ -1,16 +1,18 @@
 import * as core from '@actions/core'
 import {wait} from './wait'
+import { Octokit as ActionsOctokit } from '@octokit/action';
 
 async function run(): Promise<void> {
   try {
-    const ms: string = core.getInput('milliseconds')
-    core.debug(`Waiting ${ms} milliseconds ...`) // debug is only output if you set the secret `ACTIONS_STEP_DEBUG` to true
-
-    core.debug(new Date().toTimeString())
-    await wait(parseInt(ms, 10))
-    core.debug(new Date().toTimeString())
-
-    core.setOutput('time', new Date().toTimeString())
+    const dependencies: string[] = core.getMultilineInput('dependencies')
+    core.debug(`Extracting semantic trees from provided dependencies ...`) 
+    // get the repo name - required for authentication
+    const GITHUB_REPOSITORY = process.env.GITHUB_REPOSITORY;
+    if (!GITHUB_REPOSITORY) {
+      throw new Error(`env.GITHUB_REPOSITORY not set`);
+    }
+    // get latest commit
+    // call rest endpoint for evaluation
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
   }
