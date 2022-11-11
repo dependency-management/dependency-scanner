@@ -1,6 +1,55 @@
 require('./sourcemap-register.js');/******/ (() => { // webpackBootstrap
 /******/ 	var __webpack_modules__ = ({
 
+/***/ 657:
+/***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
+
+"use strict";
+
+var __createBinding = (this && this.__createBinding) || (Object.create ? (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    Object.defineProperty(o, k2, { enumerable: true, get: function() { return m[k]; } });
+}) : (function(o, m, k, k2) {
+    if (k2 === undefined) k2 = k;
+    o[k2] = m[k];
+}));
+var __setModuleDefault = (this && this.__setModuleDefault) || (Object.create ? (function(o, v) {
+    Object.defineProperty(o, "default", { enumerable: true, value: v });
+}) : function(o, v) {
+    o["default"] = v;
+});
+var __importStar = (this && this.__importStar) || function (mod) {
+    if (mod && mod.__esModule) return mod;
+    var result = {};
+    if (mod != null) for (var k in mod) if (k !== "default" && Object.prototype.hasOwnProperty.call(mod, k)) __createBinding(result, mod, k);
+    __setModuleDefault(result, mod);
+    return result;
+};
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.OptionsFromEnv = void 0;
+const core = __importStar(__nccwpck_require__(186));
+function OptionsFromEnv(env) {
+    const opts = {
+        reportUrl: 'https://master.d2wyo5i4kvbomx.amplifyapp.com/gh/check'
+    };
+    opts.dependencies = core.getMultilineInput('dependencies');
+    const { GITHUB_REPOSITORY, GITHUB_SHA } = env;
+    assertIsDefined(GITHUB_REPOSITORY);
+    assertIsDefined(GITHUB_SHA);
+    opts.repository = GITHUB_REPOSITORY;
+    opts.sha = GITHUB_SHA;
+    return opts;
+}
+exports.OptionsFromEnv = OptionsFromEnv;
+function assertIsDefined(val) {
+    if (val === undefined || val === null) {
+        throw new Error(`Missing required environment value. Are you running in GitHub Actions?`);
+    }
+}
+
+
+/***/ }),
+
 /***/ 109:
 /***/ (function(__unused_webpack_module, exports, __nccwpck_require__) {
 
@@ -35,25 +84,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.run = void 0;
 const core = __importStar(__nccwpck_require__(186));
 const http = __importStar(__nccwpck_require__(255));
-function assertIsDefined(val) {
-    if (val === undefined || val === null) {
-        throw new Error(`Missing required environment value. Are you running in GitHub Actions?`);
-    }
-}
-function run() {
+const input_1 = __nccwpck_require__(657);
+// Entry point for GitHub Action runner.
+function run(opts) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const dependencies = core.getMultilineInput('dependencies');
-            core.debug(`Extracting semantic trees from provided dependencies ${dependencies[0]} ...`);
-            // get the repo name - required for authentication
-            // get latest commit
-            const { GITHUB_REPOSITORY, GITHUB_SHA } = process.env;
-            assertIsDefined(GITHUB_REPOSITORY);
-            assertIsDefined(GITHUB_SHA);
             // call rest endpoint for evaluation
-            const defaultProviderEndpoint = `https://master.d2wyo5i4kvbomx.amplifyapp.com/gh/${GITHUB_REPOSITORY}/${GITHUB_SHA}`;
+            const defaultProviderEndpoint = `${opts.reportUrl}/${opts.repository}/${opts.sha}`;
             const client = new http.HttpClient('actions-github-app-token');
             client.get(defaultProviderEndpoint);
         }
@@ -63,7 +103,9 @@ function run() {
         }
     });
 }
-run();
+exports.run = run;
+const opts = (0, input_1.OptionsFromEnv)(process.env);
+run(opts);
 
 
 /***/ }),

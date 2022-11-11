@@ -1,27 +1,12 @@
 import * as core from '@actions/core'
 import * as http from '@actions/http-client'
+import {Options, OptionsFromEnv} from './input'
 
-function assertIsDefined<T>(val: T): asserts val is NonNullable<T> {
-  if (val === undefined || val === null) {
-    throw new Error(
-      `Missing required environment value. Are you running in GitHub Actions?`
-    )
-  }
-}
-
-async function run(): Promise<void> {
+// Entry point for GitHub Action runner.
+export async function run(opts: Options): Promise<void> {
   try {
-    const dependencies: string[] = core.getMultilineInput('dependencies')
-    core.debug(
-      `Extracting semantic trees from provided dependencies ${dependencies[0]} ...`
-    )
-    // get the repo name - required for authentication
-    // get latest commit
-    const {GITHUB_REPOSITORY, GITHUB_SHA} = process.env
-    assertIsDefined(GITHUB_REPOSITORY)
-    assertIsDefined(GITHUB_SHA)
     // call rest endpoint for evaluation
-    const defaultProviderEndpoint = `https://master.d2wyo5i4kvbomx.amplifyapp.com/gh/${GITHUB_REPOSITORY}/${GITHUB_SHA}`
+    const defaultProviderEndpoint = `${opts.reportUrl}/${opts.repository}/${opts.sha}`
     const client = new http.HttpClient('actions-github-app-token')
     client.get(defaultProviderEndpoint)
   } catch (error) {
@@ -29,4 +14,5 @@ async function run(): Promise<void> {
   }
 }
 
-run()
+const opts: Options = OptionsFromEnv(process.env)
+run(opts)
