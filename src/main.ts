@@ -7,8 +7,10 @@ export async function run(opts: Options): Promise<void> {
   try {
     // call rest endpoint for evaluation
     const defaultProviderEndpoint = `${opts.reportUrl}/${opts.repository}/${opts.sha}`
+    core.debug(`Calling ${defaultProviderEndpoint}`)
     const client = new http.HttpClient('actions-github-app-token')
-    client.get(defaultProviderEndpoint)
+    let response = await client.get(defaultProviderEndpoint)
+    core.debug(`Response ${response}`)
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
   }

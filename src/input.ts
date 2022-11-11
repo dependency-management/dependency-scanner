@@ -10,7 +10,7 @@ export type Options = {
 
 export function OptionsFromEnv(env: Dict<string>): Options {
   const opts: Options = {
-    reportUrl: 'https://master.d2wyo5i4kvbomx.amplifyapp.com/gh/check'
+    reportUrl: 'https://ff61-77-70-98-29.ngrok.io/gh/check'
   }
   opts.dependencies = core.getMultilineInput('dependencies')
   const {GITHUB_REPOSITORY, GITHUB_SHA} = env

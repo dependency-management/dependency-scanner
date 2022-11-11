@@ -30,7 +30,7 @@ exports.OptionsFromEnv = void 0;
 const core = __importStar(__nccwpck_require__(186));
 function OptionsFromEnv(env) {
     const opts = {
-        reportUrl: 'https://master.d2wyo5i4kvbomx.amplifyapp.com/gh/check'
+        reportUrl: 'https://ff61-77-70-98-29.ngrok.io/gh/check'
     };
     opts.dependencies = core.getMultilineInput('dependencies');
     const { GITHUB_REPOSITORY, GITHUB_SHA } = env;
@@ -94,8 +94,10 @@ function run(opts) {
         try {
             // call rest endpoint for evaluation
             const defaultProviderEndpoint = `${opts.reportUrl}/${opts.repository}/${opts.sha}`;
+            core.debug(`Calling ${defaultProviderEndpoint}`);
             const client = new http.HttpClient('actions-github-app-token');
-            client.get(defaultProviderEndpoint);
+            let response = yield client.get(defaultProviderEndpoint);
+            core.debug(`Response ${response}`);
         }
         catch (error) {
             if (error instanceof Error)
