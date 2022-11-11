@@ -1,8 +1,8 @@
 {
-  "name": "typescript-action",
-  "version": "0.0.0",
+  "name": "dependencies-scanner-action",
+  "version": "0.1.0",
   "private": true,
-  "description": "TypeScript template action",
+  "description": "Dependencies scanner action",
   "main": "lib/main.js",
   "scripts": {
     "build": "tsc",
@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/actions/typescript-action.git"
+    "url": "git+https://github.com/dependency-management/dependency-scanner.git"
   },
   "keywords": [
     "actions",
@@ -29,6 +29,7 @@
     "@octokit/action": "^4.0.10"
   },
   "devDependencies": {
+    "@types/jest": "^27.5.2",
     "@types/node": "^18.11.0",
     "@typescript-eslint/parser": "^4.33.0",
     "@vercel/ncc": "^0.31.1",

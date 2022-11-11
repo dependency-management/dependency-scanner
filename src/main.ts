@@ -1,21 +1,18 @@
 import * as core from '@actions/core'
-import {wait} from './wait'
-import { Octokit as ActionsOctokit } from '@octokit/action';
+import * as http from '@actions/http-client'
+import {Options, OptionsFromEnv} from './input'
 
-async function run(): Promise<void> {
+// Entry point for GitHub Action runner.
+export async function run(opts: Options): Promise<void> {
   try {
-    const dependencies: string[] = core.getMultilineInput('dependencies')
-    core.debug(`Extracting semantic trees from provided dependencies ...`) 
-    // get the repo name - required for authentication
-    const GITHUB_REPOSITORY = process.env.GITHUB_REPOSITORY;
-    if (!GITHUB_REPOSITORY) {
-      throw new Error(`env.GITHUB_REPOSITORY not set`);
-    }
-    // get latest commit
     // call rest endpoint for evaluation
+    const defaultProviderEndpoint = `${opts.reportUrl}/${opts.repository}/${opts.sha}`
+    const client = new http.HttpClient('actions-github-app-token')
+    client.get(defaultProviderEndpoint)
   } catch (error) {
     if (error instanceof Error) core.setFailed(error.message)
   }
 }
 
-run()
+const opts: Options = OptionsFromEnv(process.env)
+run(opts)
